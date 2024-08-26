@@ -11,9 +11,9 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('books.urls')),
+    path('api/', include('books.api.urls')),
     path('api/', include('users.urls')),
-    path('api/', include('reviews.urls')),
+    path('api/', include('reviews.api.urls')),
     # Сваггер
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
