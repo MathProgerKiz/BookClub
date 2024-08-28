@@ -1,15 +1,6 @@
 from books.models import Book
 
 
-# def rating_update(obj: Book,rating):
-#     """Метод для обновления рейтинга книги после отзыва"""
-#     if obj.favorited_by is not None:
-#         rating_array = list(obj.favorited_by)
-#         rating_sum = sum(rating_array)
-#         rating_count = len(rating_array)
-#         obj.average_rating = rating_sum / rating_count
-#     else:
-#         obj.average_rating=rating
 
 def rating_update(book: Book, new_rating):
     """Метод для обновления рейтинга книги после отзыва"""

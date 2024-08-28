@@ -13,4 +13,4 @@ class IsAdminOrReadOnly(BasePermission):
             return True
 
         # Проверяем, что текущий пользователь является владельцем объекта
-        return obj.user == request.user or request.user.is_superuser
+        return obj == request.user or request.user.is_superuser
