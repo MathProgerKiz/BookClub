@@ -114,3 +114,79 @@ class test_api_review(APITestCase):
 
         self.assertEqual(book.reviews.filter(id=review.id).count(), 0)
         self.assertEqual(self.user.reviews.count(), 0)
+
+    def test_structure_retrive_review(self):
+        """
+        Тест для проверки структуры возращаемых данных
+        """
+        book = BookFactory.create()
+
+        review_data = {
+            "user": self.user,
+            "book": book,
+            'rating': 4,
+            'comment': "Хорошая книга"
+        }
+        review = ReviewFactory.create(**review_data)
+
+        url = f'/api/review/?book={book.pk}&user={self.user.pk}'
+
+        response = self.client.get(path=url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(review_data['user'].pk, response.data['results'][0]['user'])
+        self.assertEqual(review_data['book'].pk, response.data['results'][0]['book'])
+        self.assertEqual(review_data['rating'], response.data['results'][0]['rating'])
+        self.assertEqual(review_data['comment'], response.data['results'][0]['comment'])
+
+    def test_average_rating_book(self):
+        """
+         Тест для проверки корректноти обновления рейтинга книги
+        :return:
+        """
+        book = BookFactory.create(average_rating=None)
+        reviews_data = [
+            {
+                'user': self.user.pk,
+                'book': book.pk,
+                'rating': 5,
+                'comment': "This book was amazing! Highly recommended."
+            },
+            {
+                'user': self.user.pk,
+                'book': book.pk,
+                'rating': 4,
+                'comment': "Great book, but it could have been a bit shorter."
+            },
+            {
+                'user': self.user.pk,
+                'book': book.pk,
+                'rating': 3,
+                'comment': "It was okay. Not the best, but not the worst either."
+            },
+            {
+                'user': self.user.pk,
+                'book': book.pk,
+                'rating': 2,
+                'comment': "I didn't enjoy this book much. The plot was too predictable."
+            },
+            {
+                'user': self.user.pk,
+                'book': book.pk,
+                'rating': 1,
+                'comment': "I didn't like this book at all. The writing style was not for me."
+            }
+        ]
+
+        expected_average_rating = sum(review['rating'] for review in reviews_data) / len(reviews_data)
+
+        for data in reviews_data:
+            response = self.client.post(path='/api/review/', data=data, format='json')
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Обновляем объект книги после добавления всех отзывов
+        book.refresh_from_db()
+
+
+        self.assertEqual(book.average_rating, expected_average_rating)

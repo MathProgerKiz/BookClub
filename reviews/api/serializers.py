@@ -1,12 +1,8 @@
 from rest_framework import serializers
-
-
-from rest_framework import serializers
-from books.api.serializers import BookSerializers
 from books.models import Book
 from reviews.models import Review
 from users.models import User
-from users.serializers import UserSerializers
+
 
 class ReviewSerializers(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())  # Обработка через идентификатор

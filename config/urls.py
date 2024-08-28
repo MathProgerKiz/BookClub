@@ -12,7 +12,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('books.api.urls')),
-    path('api/', include('users.urls')),
+    path('api/', include('users.api.urls')),
     path('api/', include('reviews.api.urls')),
     # Сваггер
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from books.models import Book
 from reviews.models import Review
+from reviews.permission import IsAdminOrReadOnly
 from reviews.rating import rating_update
 from reviews.api.serializers import ReviewSerializers
 
@@ -14,7 +15,7 @@ from reviews.api.serializers import ReviewSerializers
 class ReviewsViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializers
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['created_at', 'book','rating', 'user']
 

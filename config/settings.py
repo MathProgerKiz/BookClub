@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'users',
     'reviews',
     'books',
-    'notifications',
+
     
 ]
 
