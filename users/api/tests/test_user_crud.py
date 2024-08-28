@@ -31,13 +31,11 @@ class test_user(APITestCase):
         """
         users = UserFactory.create_batch(10)
 
-
         user_to_retrieve = users[7]
 
         response = self.client.get(path=f'/api/users/{user_to_retrieve.id}/', format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
         self.assertEqual(response.data['id'], user_to_retrieve.id)
 
@@ -55,28 +53,28 @@ class test_user(APITestCase):
             "password": "your_secure_password",  # Обычно здесь будет хэш пароля
             "favorites": [],  # Это поле можно оставить пустым или добавить идентификаторы книг
         }
-        response = self.client.post(path=f'/api/users/',data=user_data,format='json')
+        response = self.client.post(path=f'/api/users/', data=user_data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        user=User.objects.last()
+        user = User.objects.last()
 
-        self.assertEqual(user.email,user_data['email']) # так как это поле уникально
+        self.assertEqual(user.email, user_data['email'])  # так как это поле уникально
 
     def test_delete_user(self):
         """
         Тест для проверки удаления пользователя
         :return:
         """
-        users=UserFactory.create_batch(10)
-        user_to_delete=users[5]
+        users = UserFactory.create_batch(10)
+        user_to_delete = users[5]
         response = self.client.delete(path=f'/api/users/{user_to_delete.id}/', format='json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         result = user_to_delete in User.objects.all()
 
-        self.assertEqual(result,False)
+        self.assertEqual(result, False)
 
     def test_update_user(self):
         """
@@ -128,34 +126,21 @@ class test_user(APITestCase):
         self.assertEqual(response.data['last_name'], user_data['last_name'])
 
     def test_user_cannot_delete_another_user(self):
-        # Создаем двух разных пользователей
+        """
+        Тест проверяет что пользователь не может удалить другого пользователя
+
+        """
+
         user1 = UserFactory.create()
         user2 = UserFactory.create()
 
-        # Аутентифицируем клиента под первым пользователем
+
         self.client.force_authenticate(user=user1)
 
-        # Пытаемся удалить второго пользователя через API
+
         response = self.client.delete(path=f'/api/users/{user2.id}/', format='json')
 
-        # Проверяем, что сервер вернул статус-код 403 Forbidden или другой соответствующий код
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        # Убеждаемся, что пользователь все еще существует в базе данных
         self.assertTrue(User.objects.filter(id=user2.id).exists())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

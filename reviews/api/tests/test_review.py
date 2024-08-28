@@ -190,3 +190,18 @@ class test_api_review(APITestCase):
 
 
         self.assertEqual(book.average_rating, expected_average_rating)
+
+    def test_edit_another_user(self):
+        user = UserFactory.create()
+        user1 = UserFactory.create()
+
+        self.client.force_authenticate(user=user1)
+
+        review=ReviewFactory.create(user=user)
+
+        responce=self.client.delete(path=f'/api/review/{review.pk}/',format='json')
+
+        self.assertEqual(responce.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.assertTrue(user.reviews.exists())
+
